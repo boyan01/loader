@@ -1,6 +1,6 @@
 # loader
-[![Build Status](https://travis-ci.com/boyan01/overlay_support.svg?branch=master)](https://travis-ci.com/boyan01/overlay_support)
-[![codecov](https://codecov.io/gh/boyan01/overlay_support/branch/master/graph/badge.svg)](https://codecov.io/gh/boyan01/overlay_support)
+[![Build Status](https://travis-ci.com/boyan01/loader.svg?branch=master)](https://travis-ci.com/boyan01/loader)
+[![codecov](https://codecov.io/gh/boyan01/loader/branch/master/graph/badge.svg)](https://codecov.io/gh/boyan01/loader)
 
 加载网络数据时自动控制Widget的状态
 
