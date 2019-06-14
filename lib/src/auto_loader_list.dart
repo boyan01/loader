@@ -10,6 +10,9 @@ import 'package:scoped_model/scoped_model.dart';
 class AutoLoadMoreList<T> extends StatefulWidget {
   ///return the items loaded
   ///null indicator failed
+  ///
+  ///NOTE: simply change [loadMore] will not change the list,
+  ///you can update widget key to refresh delegate's changed
   final LoadMoreDelegate<T> loadMore;
 
   ///build list tile with item
@@ -44,16 +47,6 @@ class _AutoLoadMoreListState<T> extends State<AutoLoadMoreList<T>> {
     super.initState();
     _autoLoader = _AutoLoadMoreList(delegate: widget.loadMore);
     _autoLoader.addListener(_onDataChanged);
-  }
-
-  @override
-  void didUpdateWidget(AutoLoadMoreList<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.loadMore != widget.loadMore) {
-      _autoLoader.removeListener(_onDataChanged);
-      _autoLoader = _AutoLoadMoreList(delegate: widget.loadMore);
-      _autoLoader.addListener(_onDataChanged);
-    }
   }
 
   @override
