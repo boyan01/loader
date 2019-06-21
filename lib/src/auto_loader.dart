@@ -3,12 +3,12 @@ part of '../loader.dart';
 enum LoaderType { loading, error, empty }
 
 mixin AutoLoadMoreMixin<T> on Model {
-  @protected
-  final List<T> _data = [];
+  ///the data loaded by [loadData]
+  final List<T> data = [];
 
   bool _more = true;
 
-  ///has more comments
+  ///has more items
   bool get hasMore => _more;
 
   int _offset = 0;
@@ -22,8 +22,10 @@ mixin AutoLoadMoreMixin<T> on Model {
 
   dynamic error;
 
+  bool get loading => _autoLoadOperation != null;
+
   List get items {
-    final items = List.from(_data);
+    final items = List.from(data);
     if (error != null) {
       items.add(LoaderType.error);
       return items;
@@ -68,9 +70,7 @@ mixin AutoLoadMoreMixin<T> on Model {
               final result = LoadMoreResult._from(r.asValue);
               _more = result.hasMore;
               _offset += result.loaded;
-              _data.addAll(result.value);
-
-              onDataLoaded(offset, result);
+              data.addAll(result.value);
             }
           }).whenComplete(() {
             notifyListeners();
@@ -78,9 +78,6 @@ mixin AutoLoadMoreMixin<T> on Model {
           });
     notifyListeners();
   }
-
-  @protected
-  void onDataLoaded(int offset, LoadMoreResult result) {}
 
   ///create builder for [ListView]
   IndexedWidgetBuilder createBuilder(List data,
