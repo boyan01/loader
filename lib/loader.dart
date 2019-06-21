@@ -6,7 +6,6 @@ import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader/src/widgets.dart';
-import 'package:meta/meta.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:scoped_model/scoped_model.dart';
 

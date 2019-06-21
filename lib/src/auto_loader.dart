@@ -43,6 +43,15 @@ mixin AutoLoadMoreMixin<T> on Model {
 
   int get size => items.length;
 
+  void refresh() {
+    error = null;
+    data.clear();
+    _offset = 0;
+    _autoLoadOperation?.cancel();
+    _autoLoadOperation = null;
+    loadMore();
+  }
+
   ///
   /// load more items
   ///
