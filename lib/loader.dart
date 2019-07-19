@@ -6,7 +6,6 @@ import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader/src/widgets.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 export 'package:async/async.dart' show Result;
@@ -18,11 +17,10 @@ export 'src/auto_loader_list.dart';
 part 'src/auto_loader.dart';
 
 ///build widget when Loader has completed loading...
-typedef LoaderWidgetBuilder<T> = Widget Function(
-    BuildContext context, T result);
+typedef LoaderWidgetBuilder<T> = Widget Function(BuildContext context, T result);
 
 void _defaultFailedHandler(BuildContext context, ErrorResult result) {
-  toast(context, result.error?.toString() ?? defaultErrorMessage);
+  debugPrint("error:\n ${result.stackTrace}");
 }
 
 class Loader<T> extends StatefulWidget {
@@ -42,8 +40,7 @@ class Loader<T> extends StatefulWidget {
     return SimpleLoading(height: 200);
   }
 
-  static Widget buildSimpleFailedWidget(
-      BuildContext context, ErrorResult result) {
+  static Widget buildSimpleFailedWidget(BuildContext context, ErrorResult result) {
     return SimpleFailed(
       message: result.error.toString(),
       retry: () {
@@ -180,11 +177,7 @@ class LoaderResultWidget<T> extends StatelessWidget {
   final LoaderWidgetBuilder<T> valueBuilder;
   final Widget Function(BuildContext context, ErrorResult result) errorBuilder;
 
-  const LoaderResultWidget(
-      {Key key,
-      @required this.result,
-      @required this.valueBuilder,
-      @required this.errorBuilder})
+  const LoaderResultWidget({Key key, @required this.result, @required this.valueBuilder, @required this.errorBuilder})
       : assert(result != null),
         assert(valueBuilder != null),
         assert(errorBuilder != null),

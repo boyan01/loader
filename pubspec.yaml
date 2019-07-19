@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  overlay_support: ^0.3.0
   scoped_model: ^1.0.1
   async: ^2.2.0
 
