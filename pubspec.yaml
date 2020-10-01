@@ -5,7 +5,7 @@ author: boyan01<yangbinyhbn@gmail.com>
 homepage: https://github.com/boyan01/loader
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.9.0 <3.0.0"
 
 dependencies:
   flutter:
