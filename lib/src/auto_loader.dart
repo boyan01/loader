@@ -13,7 +13,7 @@ mixin AutoLoadMoreMixin<T> on Model {
 
   int _offset = 0;
 
-  CancelableOperation _autoLoadOperation;
+  CancelableOperation? _autoLoadOperation;
 
   @protected
   Future<Result<List<T>>> loadData(int offset);
@@ -57,7 +57,7 @@ mixin AutoLoadMoreMixin<T> on Model {
   ///
   /// [notification] use notification to check is need load more items
   ///
-  void loadMore({ScrollEndNotification notification}) {
+  void loadMore({ScrollEndNotification? notification}) {
     if (error != null) {
       return;
     }
@@ -73,8 +73,8 @@ mixin AutoLoadMoreMixin<T> on Model {
     _autoLoadOperation =
         CancelableOperation<Result<List<T>>>.fromFuture(loadData(offset))
           ..value.then((r) {
-            if (r == null || r.isError) {
-              error = r == null ? "result is null" : r.asError.error.toString();
+            if (r.isError) {
+              error = r.asError!.error.toString();
             } else {
               final result = LoadMoreResult._from(r.asValue);
               _more = result.hasMore;
@@ -90,18 +90,18 @@ mixin AutoLoadMoreMixin<T> on Model {
 
   ///create builder for [ListView]
   IndexedWidgetBuilder createBuilder(List data,
-      {IndexedWidgetBuilder builder}) {
+      {IndexedWidgetBuilder? builder}) {
     return (context, index) {
       final widget = buildItem(context, data, index) ??
           (builder == null ? null : builder(context, index));
       assert(widget != null, 'can not build ${data[index]}');
-      return widget;
+      return widget!;
     };
   }
 
   IndexedWidgetBuilder obtainBuilder() {
     return (context, index) {
-      return buildItem(context, items, index);
+      return buildItem(context, items, index)!;
     };
   }
 
@@ -110,7 +110,7 @@ mixin AutoLoadMoreMixin<T> on Model {
   /// return null if you do not care this position
   ///
   @protected
-  Widget buildItem(BuildContext context, List list, int index) {
+  Widget? buildItem(BuildContext context, List list, int index) {
     if (list[index] == LoaderType.loading) {
       return buildLoadingItem(context, list.length == 1);
     } else if (list[index] == LoaderType.error) {
@@ -141,11 +141,15 @@ mixin AutoLoadMoreMixin<T> on Model {
       return Container(
         height: 56,
         child: Center(
-          child: RaisedButton(
+          child: ElevatedButton(
             onPressed: retry,
             child: Text("加载失败！点击重试"),
-            textColor: Theme.of(context).primaryTextTheme.body1.color,
-            color: Theme.of(context).errorColor,
+            style: ButtonStyle(
+                textStyle: MaterialStateProperty.all(TextStyle(
+                  color: Theme.of(context).primaryTextTheme.bodyText2!.color,
+                )),
+                backgroundColor:
+                    MaterialStateProperty.all(Theme.of(context).errorColor)),
           ),
         ),
       );
@@ -169,22 +173,22 @@ class LoadMoreResult<T> extends ValueResult<List<T>> {
 
   final dynamic payload;
 
-  LoadMoreResult(List<T> value, {int loaded, this.hasMore = true, this.payload})
-      : assert(value != null),
-        this.loaded = loaded ?? value.length,
+  LoadMoreResult(List<T> value,
+      {int? loaded, this.hasMore = true, this.payload})
+      : this.loaded = loaded ?? value.length,
         super(value);
 
-  factory LoadMoreResult._from(ValueResult<List<T>> result) {
+  factory LoadMoreResult._from(ValueResult<List<T>>? result) {
     if (result is LoadMoreResult) {
-      return result;
+      return result as LoadMoreResult<T>;
     }
-    return LoadMoreResult(result.value);
+    return LoadMoreResult(result!.value);
   }
 
   ///utils method for result mapping
-  static Result<R> map<T, R>(Result<T> result, R Function(T source) map) {
+  static Result<R>? map<T, R>(Result<T> result, R Function(T source) map) {
     if (result.isError) return result.asError;
-    return Result.value(map(result.asValue.value));
+    return Result.value(map(result.asValue!.value));
   }
 }
 

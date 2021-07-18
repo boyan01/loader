@@ -130,9 +130,9 @@ class _MockCallback extends Mock {
 }
 
 class _TestContext extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
-  const _TestContext({Key key, this.child}) : super(key: key);
+  const _TestContext({Key? key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

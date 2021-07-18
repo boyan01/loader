@@ -19,7 +19,7 @@ class AutoLoadMoreList<T> extends StatefulWidget {
   final Widget Function(BuildContext context, T item) builder;
 
   const AutoLoadMoreList(
-      {Key key, @required this.loadMore, @required this.builder})
+      {Key? key, required this.loadMore, required this.builder})
       : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class AutoLoadMoreList<T> extends StatefulWidget {
 class _AutoLoadMoreList<T> extends Model with AutoLoadMoreMixin<T> {
   final LoadMoreDelegate<T> delegate;
 
-  _AutoLoadMoreList({@required this.delegate}) {
+  _AutoLoadMoreList({required this.delegate}) {
     loadMore();
   }
 
@@ -40,7 +40,7 @@ class _AutoLoadMoreList<T> extends Model with AutoLoadMoreMixin<T> {
 }
 
 class _AutoLoadMoreListState<T> extends State<AutoLoadMoreList<T>> {
-  _AutoLoadMoreList _autoLoader;
+  late _AutoLoadMoreList _autoLoader;
 
   @override
   void initState() {

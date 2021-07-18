@@ -26,16 +26,14 @@ void _defaultFailedHandler(BuildContext context, ErrorResult result) {
 
 class Loader<T> extends StatefulWidget {
   const Loader(
-      {Key key,
-      @required this.loadTask,
-      @required this.builder,
+      {Key? key,
+      required this.loadTask,
+      required this.builder,
       this.loadingBuilder,
       this.initialData,
       this.onError = _defaultFailedHandler,
       this.errorBuilder})
-      : assert(loadTask != null),
-        assert(builder != null),
-        super(key: key);
+      : super(key: key);
 
   static Widget buildSimpleLoadingWidget<T>(BuildContext context) {
     return SimpleLoading(height: 200);
@@ -46,12 +44,12 @@ class Loader<T> extends StatefulWidget {
     return SimpleFailed(
       message: result.error.toString(),
       retry: () {
-        Loader.of(context).refresh();
+        Loader.of(context)!.refresh();
       },
     );
   }
 
-  final FutureOr<T> initialData;
+  final FutureOr<T>? initialData;
 
   ///task to load
   ///returned future'data will send by [LoaderWidgetBuilder]
@@ -59,7 +57,7 @@ class Loader<T> extends StatefulWidget {
 
   final LoaderWidgetBuilder<T> builder;
 
-  final Widget Function(BuildContext context, ErrorResult result) errorBuilder;
+  final Widget Function(BuildContext context, ErrorResult result)? errorBuilder;
 
   ///callback to handle error, could be null
   ///
@@ -68,10 +66,10 @@ class Loader<T> extends StatefulWidget {
 
   ///widget display when loading
   ///if null ,default to display a white background with a Circle Progress
-  final WidgetBuilder loadingBuilder;
+  final WidgetBuilder? loadingBuilder;
 
-  static LoaderState<T> of<T>(BuildContext context) {
-    return context.findAncestorStateOfType<LoaderState>();
+  static LoaderState<T>? of<T>(BuildContext context) {
+    return context.findAncestorStateOfType<LoaderState>() as LoaderState<T>?;
   }
 
   @override
@@ -84,9 +82,9 @@ const defaultErrorMessage = '啊哦，出错了~';
 class LoaderState<T> extends State<Loader> {
   bool get isLoading => _loadingTask != null;
 
-  CancelableOperation _loadingTask;
+  CancelableOperation<Result<T>>? _loadingTask;
 
-  Result<T> value;
+  Result<T>? value;
 
   @override
   void initState() {
@@ -105,7 +103,7 @@ class LoaderState<T> extends State<Loader> {
   }
 
   @override
-  Loader<T> get widget => super.widget;
+  Loader<T> get widget => super.widget as Loader<T>;
 
   ///refresh data
   ///force: true to force refresh when a loading ongoing
@@ -114,43 +112,35 @@ class LoaderState<T> extends State<Loader> {
   }
 
   Future<Result<T>> _loadData(Future<Result<T>> future, {bool force = false}) {
-    assert(future != null);
-    assert(force != null);
-
     if (_loadingTask != null && !force) {
-      return _loadingTask.value;
+      return _loadingTask!.value;
     }
     _loadingTask?.cancel();
     _loadingTask = CancelableOperation<Result<T>>.fromFuture(future)
       ..value.then((result) {
-        assert(result != null, "result can not be null");
         if (result.isError) {
-          _onError(result);
+          _onError(result as ErrorResult);
         } else {
           value = result;
         }
       }).catchError((e, StackTrace stack) {
-        _onError(Result.error(e, stack));
+        _onError(Result.error(e, stack) as ErrorResult);
       }).whenComplete(() {
         _loadingTask = null;
         setState(() {});
       });
     //notify if should be in loading status
     setState(() {});
-    return _loadingTask.value;
+    return _loadingTask!.value;
   }
 
   void _onError(ErrorResult result) {
-    if (result.stackTrace != null) {
-      debugPrint(result.stackTrace.toString());
-    }
+    debugPrint(result.stackTrace.toString());
 
-    if (value == null || value.isError) {
+    if (value == null || value!.isError) {
       value = result;
     }
-    if (widget.onError != null) {
-      widget.onError(context, result);
-    }
+    widget.onError(context, result);
   }
 
   @override
@@ -163,8 +153,8 @@ class LoaderState<T> extends State<Loader> {
   @override
   Widget build(BuildContext context) {
     if (value != null) {
-      return LoaderResultWidget(
-          result: value,
+      return LoaderResultWidget<T>(
+          result: value!,
           valueBuilder: widget.builder,
           errorBuilder: widget.errorBuilder ?? Loader.buildSimpleFailedWidget);
     }
@@ -180,21 +170,18 @@ class LoaderResultWidget<T> extends StatelessWidget {
   final Widget Function(BuildContext context, ErrorResult result) errorBuilder;
 
   const LoaderResultWidget(
-      {Key key,
-      @required this.result,
-      @required this.valueBuilder,
-      @required this.errorBuilder})
-      : assert(result != null),
-        assert(valueBuilder != null),
-        assert(errorBuilder != null),
-        super(key: key);
+      {Key? key,
+      required this.result,
+      required this.valueBuilder,
+      required this.errorBuilder})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (result.isValue) {
-      return valueBuilder(context, result.asValue.value);
+      return valueBuilder(context, result.asValue!.value);
     } else {
-      return errorBuilder(context, result);
+      return errorBuilder(context, result as ErrorResult);
     }
   }
 }

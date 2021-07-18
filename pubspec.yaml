@@ -5,17 +5,17 @@ author: boyan01<yangbinyhbn@gmail.com>
 homepage: https://github.com/boyan01/loader
 
 environment:
-  sdk: ">=2.9.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  scoped_model: ^1.0.1
+  scoped_model: ^2.0.0-nullsafety.0
   async: ^2.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^4.0.0
+  mockito: ^5.0.11
 
 flutter:

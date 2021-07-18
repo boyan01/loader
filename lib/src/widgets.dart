@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SimpleLoading extends StatelessWidget {
   final double height;
 
-  const SimpleLoading({Key key, this.height = 200}) : super(key: key);
+  const SimpleLoading({Key? key, this.height = 200}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,11 @@ class SimpleLoading extends StatelessWidget {
 }
 
 class SimpleFailed extends StatelessWidget {
-  final VoidCallback retry;
+  final VoidCallback? retry;
 
-  final String message;
+  final String? message;
 
-  const SimpleFailed({Key key, this.retry, this.message}) : super(key: key);
+  const SimpleFailed({Key? key, this.retry, this.message}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +31,9 @@ class SimpleFailed extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            message != null ? Text(message) : Container(),
+            message != null ? Text(message!) : Container(),
             SizedBox(height: 8),
-            RaisedButton(
+            ElevatedButton(
               child: Text(MaterialLocalizations.of(context)
                   .refreshIndicatorSemanticLabel),
               onPressed: retry,
