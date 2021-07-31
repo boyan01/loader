@@ -49,7 +49,7 @@ class Loader<T> extends StatefulWidget {
     );
   }
 
-  final FutureOr<T>? initialData;
+  final FutureOr<T?>? initialData;
 
   ///task to load
   ///returned future'data will send by [LoaderWidgetBuilder]
